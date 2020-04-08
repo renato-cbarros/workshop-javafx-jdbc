@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,8 +139,8 @@ public class SellerDaoJDBC implements SellerDao {
 			rs = st.executeQuery();
 			
 			if (rs.next()) {
-				Department dep = imprementDepartament(rs);
-				Seller seller = imprementSeller(rs, dep);
+				Department dep = instantiateDepartment(rs);
+				Seller seller = instantiateSeller(rs, dep);
 				return seller;
 			}
 			return null;
@@ -175,11 +176,11 @@ public class SellerDaoJDBC implements SellerDao {
 				Department dep = mapDep.get(rs.getInt("DepartmentId"));
 				
 				if (dep == null) {
-					dep = imprementDepartament(rs);
+					dep = instantiateDepartment(rs);
 					mapDep.put(rs.getInt("DepartmentId"), dep);
 				}
 				
-				Seller seller = imprementSeller(rs, dep);
+				Seller seller = instantiateSeller(rs, dep);
 				sellerList.add(seller);
 
 			}
@@ -194,19 +195,19 @@ public class SellerDaoJDBC implements SellerDao {
 		
 	}
 	
-	protected Department imprementDepartament(ResultSet rs) throws SQLException {
+	protected Department instantiateDepartment(ResultSet rs) throws SQLException {
 		Department departament = new Department();
 		departament.setId(rs.getInt("DepartmentId"));
 		departament.setName(rs.getString("DepName"));	
 		return departament;
 	}
 	
-	protected Seller imprementSeller(ResultSet rs, Department dep) throws SQLException {
+	protected Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
 		Seller seller = new Seller();
 		seller.setId(rs.getInt("Id"));
 		seller.setName(rs.getString("Name"));
 		seller.setEmail(rs.getString("Email"));
-		seller.setBirthDate(rs.getDate("BirthDate"));
+		seller.setBirthDate(new Date(rs.getTimestamp("BirthDate").getTime()));
 		seller.setBaseSalary(rs.getDouble("BaseSalary"));
 		seller.setDepartment(dep);
 		return seller;
@@ -236,11 +237,11 @@ public class SellerDaoJDBC implements SellerDao {
 				Department dep = mapDep.get(rs.getInt("DepartmentId"));
 				
 				if (dep == null) {
-					dep = imprementDepartament(rs);
+					dep = instantiateDepartment(rs);
 					mapDep.put(rs.getInt("DepartmentId"), dep);
 				}
 				
-				Seller seller = imprementSeller(rs, dep);
+				Seller seller = instantiateSeller(rs, dep);
 				sellerList.add(seller);
 
 			}
