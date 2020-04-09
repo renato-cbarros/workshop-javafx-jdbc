@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -169,6 +171,26 @@ public class SellerFormController implements Initializable {
 		}
 		obj.setName(txtName.getText());
 
+		if (txtEmail.getText() == null || txtEmail.getText().equals("")) {
+			exception.addErrors("email", "Field can't be empty");
+		}
+		obj.setEmail(txtEmail.getText());
+
+		if (dpBirthDate.getValue() == null) {
+			exception.addErrors("birthDate", "Field can't be empty");
+		} else {
+			Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setBirthDate(Date.from(instant));
+			dpBirthDate.setValue(null);
+		}
+
+		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().equals("")) {
+			exception.addErrors("baseSalary", "Field can't be empty");
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
+		
+		obj.setDepartment(cBDeparment.getValue());
+
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
@@ -182,7 +204,7 @@ public class SellerFormController implements Initializable {
 		Constraints.setTextFieldMaxLength(txtEmail, 70);
 		Constraints.setTextFieldDouble(txtBaseSalary);
 		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
-		
+
 		initializeComboBoxDepartment();
 	}
 
@@ -202,7 +224,7 @@ public class SellerFormController implements Initializable {
 		}
 		if (entity.getDepartment() != null) {
 			cBDeparment.setValue(entity.getDepartment());
-		}else {
+		} else {
 			cBDeparment.getSelectionModel().selectFirst();
 		}
 
@@ -211,9 +233,20 @@ public class SellerFormController implements Initializable {
 	public void setErrorMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet();
 
-		if (fields.contains("name")) {
-			lblErrorName.setText(errors.get("name"));
-		}
+		// operador ternario substitui o if - else: if (fields.contains("name")){
+		//lblErrorName.setText(errors.get("name"));
+		//} else {
+		//lblErrorName.setText("");
+		//}
+		///////////////////if(|||||||||||||||||||||||){|||||||||||||||||}else{||}
+		lblErrorName.setText((fields.contains("name") ? errors.get("name") : ""));
+		
+		lblErrorEmail.setText((fields.contains("email") ? errors.get("email") : ""));
+
+		lblErrorBirthDate.setText((fields.contains("birthDate") ? errors.get("birthDate"): ""));
+
+		lblErrorBaseSalary.setText((fields.contains("baseSalary") ? errors.get("baseSalary") : ""));
+
 	}
 
 }

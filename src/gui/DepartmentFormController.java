@@ -136,9 +136,8 @@ public class DepartmentFormController implements Initializable {
 	public void setErrorMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet();
 		
-		if (fields.contains("name")) {
-			lblErrorName.setText(errors.get("name"));
-		}
+		lblErrorName.setText((fields.contains("name") ? errors.get("name") : ""));
+
 	}
 	
 }

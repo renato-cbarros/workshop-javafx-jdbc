@@ -29,6 +29,16 @@ public class Utils {
 		}
 
 	}
+	
+	public static Double tryParseToDouble(String number) {
+
+		try {
+			return Double.parseDouble(number);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+
+	}
 
 	public static <T> void formatTableColumnDouble(TableColumn<T, Double> tableColumn, int decimalPlaces) {
 		tableColumn.setCellFactory(column -> {
